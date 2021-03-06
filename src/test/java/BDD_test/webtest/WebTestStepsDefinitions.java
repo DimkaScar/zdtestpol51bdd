@@ -17,7 +17,7 @@ public class WebTestStepsDefinitions{
 
     WebDriver driver;
     WebDriverWait wait;
-    String firstBlogTitle;
+    String firstBlogTitle, firstCastTitle;
 
     @Before
     public void setup(){
@@ -38,6 +38,20 @@ public class WebTestStepsDefinitions{
         firstBlog.click();
     }
 
+    @When("I go on Podcasts section")
+    public void i_go_on_podcasts_section() {
+        WebElement podcastSection = driver.findElement(By.linkText("Podcasts"));
+        podcastSection.click();
+    }
+    @When("I click on first Podcast")
+    public void i_click_on_first_podcast() {
+        wait.until(ExpectedConditions.titleContains("Podcasts"));
+        WebElement firstCast = driver.findElement(By.tagName("h3"));
+        firstCastTitle = firstCast.getText();
+        firstCastTitle = firstCastTitle.replace("podcast", "");
+        firstCast.click();
+    }
+
     @Then("I should be redirected to blog page")
     public void i_should_be_redirected_to_blog_page() {
         wait.until(ExpectedConditions.titleContains(firstBlogTitle));
@@ -46,5 +60,14 @@ public class WebTestStepsDefinitions{
         System.out.println("to jest tex mojego bloga : " + blogTitleText);
         Assert.assertEquals(firstBlogTitle, blogTitleText);
     }
+    @Then("I should be redirected to Podcast page")
+    public void i_should_be_redirected_to_podcast_page() {
+        wait.until(ExpectedConditions.titleContains(firstCastTitle));
+        WebElement castTitle = driver.findElement(By.tagName("h1"));
+        String castTitleText = castTitle.getText();
+        System.out.println("to jest tex mojego castu : " + castTitleText);
+        Assert.assertEquals(firstCastTitle, castTitleText);
+    }
 
 }
+/**/

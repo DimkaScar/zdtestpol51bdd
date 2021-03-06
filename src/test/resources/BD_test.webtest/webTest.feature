@@ -3,3 +3,9 @@ Feature: devTo basic features
     Given I go to devTo main page
     When I click on first blog displayed
     Then I should be redirected to blog page
+
+  Scenario:  Open first podcast
+    Given I go to devTo main page
+    When I go on Podcasts section
+    And I click on first Podcast
+    Then I should be redirected to Podcast page
