@@ -9,5 +9,3 @@ Feature: devTo basic features
     When I go on Podcasts section
     And I click on first Podcast
     Then I should be redirected to Podcast page
-
-    15645654654654654
