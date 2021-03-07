@@ -21,6 +21,7 @@ public class WebTestStepsDefinitions{
 
     WebDriver driver;
     WebDriverWait wait;
+    WebElement playPodcast;
     String firstBlogTitle, firstCastTitle, searchingPhrase;
 
     @Before
@@ -44,28 +45,6 @@ public class WebTestStepsDefinitions{
         firstBlog.click();
     }
 
-    @When("I go on Podcasts section")
-    public void i_go_on_podcasts_section() {
-        WebElement podcastSection = driver.findElement(By.linkText("Podcasts"));
-        podcastSection.click();
-    }
-    @When("I click on first Podcast")
-    public void i_click_on_first_podcast() {
-        wait.until(ExpectedConditions.titleContains("Podcasts"));
-        WebElement firstCast = driver.findElement(By.tagName("h3"));
-        firstCastTitle = firstCast.getText();
-        firstCastTitle = firstCastTitle.replace("podcast", "");
-        firstCast.click();
-    }
-
-    @When("I search for {string} phrase")
-    public void i_search_for_phrase(String phrase) {
-        WebElement searchBar = driver.findElement(By.name("q"));
-        searchBar.sendKeys(phrase);
-        searchingPhrase = phrase;
-        searchBar.sendKeys(Keys.RETURN);
-    }
-
     @Then("I should be redirected to blog page")
     public void i_should_be_redirected_to_blog_page() {
         wait.until(ExpectedConditions.titleContains(firstBlogTitle));
@@ -74,13 +53,46 @@ public class WebTestStepsDefinitions{
         System.out.println("to jest tex mojego bloga : " + blogTitleText);
         Assert.assertEquals(firstBlogTitle, blogTitleText);
     }
-    @Then("I should be redirected to Podcast page")
-    public void i_should_be_redirected_to_podcast_page() {
+
+    @When("I go to Podcasts section")
+    public void i_go_to_Podcasts_section() {
+        WebElement podcastSection = driver.findElement(By.linkText("Podcasts"));
+        podcastSection.click();
+    }
+    @When("I click on first Podcast on the list")
+    public void i_click_on_first_podcast_on_the_list() {
+        wait.until(ExpectedConditions.titleContains("Podcasts"));
+        WebElement firstCast = driver.findElement(By.tagName("h3"));
+        firstCastTitle = firstCast.getText();
+        firstCastTitle = firstCastTitle.replace("podcast", "");
+        firstCast.click();
+    }
+    @When("I play the podcast")
+    public void i_play_the_podcast() {
         wait.until(ExpectedConditions.titleContains(firstCastTitle));
-        WebElement castTitle = driver.findElement(By.tagName("h1"));
+       /* WebElement castTitle = driver.findElement(By.tagName("h1"));
         String castTitleText = castTitle.getText();
         System.out.println("to jest tex mojego castu : " + castTitleText);
         Assert.assertEquals(firstCastTitle, castTitleText);
+*/
+        playPodcast = driver.findElement(By.className("record"));
+        playPodcast.click();
+    }
+    @Then("Podcast Should be played")
+    public void podcast_should_be_played()  {
+        WebElement initializinig = driver.findElement(By.className("status-message"));
+        wait.until(ExpectedConditions.invisibilityOf(initializinig));
+        WebElement pauseBut = driver.findElement(By.xpath("//img[contains(@class,'pause-butt')]"));
+        Boolean isPuaseButtonVisible = pauseBut.isDisplayed();
+        Assert.assertTrue(isPuaseButtonVisible);
+    }
+
+    @When("I search for {string} phrase")
+    public void i_search_for_phrase(String phrase) {
+        WebElement searchBar = driver.findElement(By.name("q"));
+        searchBar.sendKeys(phrase);
+        searchingPhrase = phrase;
+        searchBar.sendKeys(Keys.RETURN);
     }
 
     @Then("Top {int} blogs found should have correct phrase in title")
