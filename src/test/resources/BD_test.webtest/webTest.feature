@@ -12,5 +12,5 @@ Feature: devTo basic features
 
   Scenario: Search the phrase
     Given I go to devTo main page
-    When I search for "testing" phrase
+    When I search for "java" phrase
     Then Top 3 blogs found should have correct phrase in title
