@@ -4,14 +4,18 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
 import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedCondition;
+
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.Keys;
+
+import java.util.List;
+import java.util.Locale;
+
 
 public class WebTestStepsDefinitions{
 
@@ -28,8 +32,10 @@ public class WebTestStepsDefinitions{
 
     @Given("I go to devTo main page")
     public void i_go_to_devto_main_page() {
+
         driver.get("https://dev.to/");
     }
+
     @When("I click on first blog displayed")
     public void i_click_on_first_blog_displayed() {
        //driver.findElement(By.className("crayons-story__body")).click();
@@ -52,6 +58,15 @@ public class WebTestStepsDefinitions{
         firstCast.click();
     }
 
+    @When("I search for testing phrase")
+    public void i_search_for_testing_phrase() {
+        WebElement searchBar = driver.findElement(By.name("q"));
+        searchBar.sendKeys("testing");
+        searchBar.sendKeys(Keys.RETURN);
+
+
+    }
+
     @Then("I should be redirected to blog page")
     public void i_should_be_redirected_to_blog_page() {
         wait.until(ExpectedConditions.titleContains(firstBlogTitle));
@@ -69,5 +84,20 @@ public class WebTestStepsDefinitions{
         Assert.assertEquals(firstCastTitle, castTitleText);
     }
 
+    @Then("Top {int} blogs found should have testing in title")
+    public void top_blogs_found_should_have_testing_in_title(Integer int1) {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("h3.crayons-story__title")));
+        wait.until(ExpectedConditions.attributeContains(By.id("substories"),"class","search-results-loaded"));
+        List<WebElement> allPosts = driver.findElements(By.cssSelector(".crayons-story__title > a"));
+        if (allPosts.size() >=1 ) {
+            for (int i = 0; i < int1; i++) {
+                WebElement singlePost = allPosts.get(i);
+                String singlePostTitle = singlePost.getText().toLowerCase();  // to lowercase przeprowadza text do małych znaków
+                Boolean isTestingInTitle = singlePostTitle.contains("testing");
+                Assert.assertTrue(isTestingInTitle);
+            }
+        }
+    }
+
 }
-/**/
+
