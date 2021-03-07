@@ -21,7 +21,7 @@ public class WebTestStepsDefinitions{
 
     WebDriver driver;
     WebDriverWait wait;
-    String firstBlogTitle, firstCastTitle;
+    String firstBlogTitle, firstCastTitle, searchingPhrase;
 
     @Before
     public void setup(){
@@ -58,13 +58,12 @@ public class WebTestStepsDefinitions{
         firstCast.click();
     }
 
-    @When("I search for testing phrase")
-    public void i_search_for_testing_phrase() {
+    @When("I search for {string} phrase")
+    public void i_search_for_phrase(String phrase) {
         WebElement searchBar = driver.findElement(By.name("q"));
-        searchBar.sendKeys("testing");
+        searchBar.sendKeys(phrase);
+        searchingPhrase = phrase;
         searchBar.sendKeys(Keys.RETURN);
-
-
     }
 
     @Then("I should be redirected to blog page")
@@ -84,8 +83,8 @@ public class WebTestStepsDefinitions{
         Assert.assertEquals(firstCastTitle, castTitleText);
     }
 
-    @Then("Top {int} blogs found should have testing in title")
-    public void top_blogs_found_should_have_testing_in_title(Integer int1) {
+    @Then("Top {int} blogs found should have correct phrase in title")
+    public void top_blogs_found_should_have_correct_phrase_in_title(Integer int1) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("h3.crayons-story__title")));
         wait.until(ExpectedConditions.attributeContains(By.id("substories"),"class","search-results-loaded"));
         List<WebElement> allPosts = driver.findElements(By.cssSelector(".crayons-story__title > a"));
@@ -93,7 +92,7 @@ public class WebTestStepsDefinitions{
             for (int i = 0; i < int1; i++) {
                 WebElement singlePost = allPosts.get(i);
                 String singlePostTitle = singlePost.getText().toLowerCase();  // to lowercase przeprowadza text do małych znaków
-                Boolean isTestingInTitle = singlePostTitle.contains("testing");
+                Boolean isTestingInTitle = singlePostTitle.contains(searchingPhrase);
                 Assert.assertTrue(isTestingInTitle);
             }
         }

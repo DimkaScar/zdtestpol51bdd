@@ -10,7 +10,7 @@ Feature: devTo basic features
     And I click on first Podcast
     Then I should be redirected to Podcast page
 
-  Scenario: Search the testing phrase
+  Scenario: Search the phrase
     Given I go to devTo main page
-    When I search for testing phrase
-    Then Top 3 blogs found should have testing in title
+    When I search for "testing" phrase
+    Then Top 3 blogs found should have correct phrase in title
