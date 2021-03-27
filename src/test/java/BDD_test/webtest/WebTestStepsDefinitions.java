@@ -1,7 +1,6 @@
 package BDD_test.webtest;
 
-import BDD_test.webtest.pages.MainPage;
-import BDD_test.webtest.pages.SingleBlogPage;
+import BDD_test.webtest.pages.*;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -24,10 +23,12 @@ public class WebTestStepsDefinitions{
 
     WebDriver driver;
     WebDriverWait wait;
-    WebElement playPodcast;
     String firstBlogTitle, firstCastTitle, searchingPhrase;
     MainPage mainPage;
     SingleBlogPage singleBlogPage;
+    PodcastListPage podcastListPage;
+    SinglePodcastPage singlePodcastPage;
+    SearchResultPage searchResultPage;
 
 
     @Before
@@ -59,62 +60,53 @@ public class WebTestStepsDefinitions{
 
     @When("I go to Podcasts section")
     public void i_go_to_Podcasts_section() {
-        WebElement podcastSection = driver.findElement(By.linkText("Podcasts"));
-        podcastSection.click();
+        mainPage.podcastSection.click();
     }
     @When("I click on first Podcast on the list")
     public void i_click_on_first_podcast_on_the_list() {
         wait.until(ExpectedConditions.titleContains("Podcasts"));
-        WebElement firstCast = driver.findElement(By.tagName("h3"));
-        firstCastTitle = firstCast.getText();
+        podcastListPage = new PodcastListPage(driver);
+        firstCastTitle = podcastListPage.firstCast.getText();
         firstCastTitle = firstCastTitle.replace("podcast", "");
-        firstCast.click();
+        podcastListPage.firstCast.click();
     }
     @When("I play the podcast")
     public void i_play_the_podcast() {
         wait.until(ExpectedConditions.titleContains(firstCastTitle));
-       /* WebElement castTitle = driver.findElement(By.tagName("h1"));
-        String castTitleText = castTitle.getText();
-        System.out.println("to jest tex mojego castu : " + castTitleText);
-        Assert.assertEquals(firstCastTitle, castTitleText);
-*/
-        playPodcast = driver.findElement(By.className("record"));
-        playPodcast.click();
+        singlePodcastPage = new SinglePodcastPage(driver);
+        singlePodcastPage.playPodcast.click();
     }
     @Then("Podcast Should be played")
     public void podcast_should_be_played()  {
-        WebElement initializinig = driver.findElement(By.className("status-message"));
-        wait.until(ExpectedConditions.invisibilityOf(initializinig));
-        WebElement pauseBut = driver.findElement(By.xpath("//img[contains(@class,'pause-butt')]"));
-        Boolean isPuaseButtonVisible = pauseBut.isDisplayed();
+        wait.until(ExpectedConditions.invisibilityOf(singlePodcastPage.initializinig));
+        Boolean isPuaseButtonVisible = singlePodcastPage.pauseBut.isDisplayed();
         Assert.assertTrue(isPuaseButtonVisible);
     }
 
     @When("I search for {string} phrase")
     public void i_search_for_phrase(String phrase) {
-        WebElement searchBar = driver.findElement(By.name("q"));
-        searchBar.sendKeys(phrase);
+        mainPage.searchBar.sendKeys(phrase);
         searchingPhrase = phrase;
-        searchBar.sendKeys(Keys.RETURN);
+        mainPage.searchBar.sendKeys(Keys.RETURN);
     }
 
     @Then("Top {int} blogs found should have correct phrase in title")
     public void top_blogs_found_should_have_correct_phrase_in_title(Integer int1){
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("h3.crayons-story__title"))); //h3
         wait.until(ExpectedConditions.attributeContains(By.id("substories"),"class","search-results-loaded"));
-        List<WebElement> allPosts = driver.findElements(By.className("crayons-story__body")); // div - caly wpis
-        if(allPosts.size() >= int1){
+
+        searchResultPage = new SearchResultPage(driver);
+
+        if(searchResultPage.allPosts.size() >= int1){
             for (int i=0;i<int1;i++){
-                WebElement singlePost = allPosts.get(i);
-                WebElement singlePostTitle = singlePost.findElement(By.cssSelector(".crayons-story__title > a")); //tytul kafelka
-                String singlePostTitleText = singlePostTitle.getText().toLowerCase(); // wyciagnij tekst z tytulu
+                WebElement singlePost = searchResultPage.allPosts.get(i);
+                String singlePostTitleText = searchResultPage.postTitles.getText().toLowerCase(); // wyciagnij tekst z tytulu
                 Boolean isPhraseInTitle = singlePostTitleText.contains(searchingPhrase);
                 if(isPhraseInTitle){ // isPhraseInTitle == true
                     Assert.assertTrue(isPhraseInTitle);
                 }
                 else{
-                    WebElement snippet = singlePost.findElement(By.xpath("//div[contains(@class,'crayons-story__snippet')]"));
-                    String snippetText = snippet.getText().toLowerCase();
+                    String snippetText = searchResultPage.snippet.getText().toLowerCase();
                     Boolean isPhraseInSnippet = snippetText.contains(searchingPhrase);
                     Assert.assertTrue(isPhraseInSnippet);
                 }

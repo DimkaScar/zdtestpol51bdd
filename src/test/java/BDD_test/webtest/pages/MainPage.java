@@ -10,11 +10,16 @@ public class MainPage {
     String url = "https://dev.to/";
     @FindBy(css = "h2.crayons-story__title > a")
     public WebElement firstBlog;
+    @FindBy(linkText = "Podcasts")
+    public WebElement  podcastSection;
+    @FindBy(name = "q")
+    public WebElement searchBar;
 
     public MainPage(WebDriver driver){
         this.driver = driver;
         this.driver.get(url);
         PageFactory.initElements(this.driver, this);
+
     }
 
 }
