@@ -21,5 +21,9 @@ public class MainPage {
         PageFactory.initElements(this.driver, this);
 
     }
+    public SingleBlogPage selectFirstBlog(){
+        firstBlog.click();
+        return new SingleBlogPage(this.driver);
+    }
 
 }

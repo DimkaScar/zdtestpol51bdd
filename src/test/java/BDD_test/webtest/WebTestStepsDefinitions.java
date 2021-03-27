@@ -46,13 +46,13 @@ public class WebTestStepsDefinitions{
     @When("I click on first blog displayed")
     public void i_click_on_first_blog_displayed() {
         firstBlogTitle = mainPage.firstBlog.getText();
-        mainPage.firstBlog.click();
+        singleBlogPage = mainPage.selectFirstBlog();
     }
 
     @Then("I should be redirected to blog page")
     public void i_should_be_redirected_to_blog_page() {
         wait.until(ExpectedConditions.titleContains(firstBlogTitle));
-        singleBlogPage = new SingleBlogPage(driver);
+
         String blogTitleText = singleBlogPage.blogTitle.getText();
         System.out.println("to jest tex mojego bloga : " + blogTitleText);
         Assert.assertEquals(firstBlogTitle, blogTitleText);
