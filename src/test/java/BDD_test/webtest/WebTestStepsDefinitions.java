@@ -1,5 +1,7 @@
 package BDD_test.webtest;
 
+import BDD_test.webtest.pages.MainPage;
+import BDD_test.webtest.pages.SingleBlogPage;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -24,6 +26,9 @@ public class WebTestStepsDefinitions{
     WebDriverWait wait;
     WebElement playPodcast;
     String firstBlogTitle, firstCastTitle, searchingPhrase;
+    MainPage mainPage;
+    SingleBlogPage singleBlogPage;
+
 
     @Before
     public void setup(){
@@ -34,22 +39,20 @@ public class WebTestStepsDefinitions{
 
     @Given("I go to devTo main page")
     public void i_go_to_devto_main_page() {
-        driver.get("https://dev.to/");
+        mainPage = new MainPage(driver);
     }
 
     @When("I click on first blog displayed")
     public void i_click_on_first_blog_displayed() {
-
-        WebElement firstBlog = driver.findElement(By.cssSelector("h2.crayons-story__title > a"));
-        firstBlogTitle = firstBlog.getText();
-        firstBlog.click();
+        firstBlogTitle = mainPage.firstBlog.getText();
+        mainPage.firstBlog.click();
     }
 
     @Then("I should be redirected to blog page")
     public void i_should_be_redirected_to_blog_page() {
         wait.until(ExpectedConditions.titleContains(firstBlogTitle));
-        WebElement blogTitle = driver.findElement(By.tagName("h1"));
-        String blogTitleText = blogTitle.getText();
+        singleBlogPage = new SingleBlogPage(driver);
+        String blogTitleText = singleBlogPage.blogTitle.getText();
         System.out.println("to jest tex mojego bloga : " + blogTitleText);
         Assert.assertEquals(firstBlogTitle, blogTitleText);
     }
