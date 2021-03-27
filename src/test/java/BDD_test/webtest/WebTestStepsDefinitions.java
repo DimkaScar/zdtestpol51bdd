@@ -14,6 +14,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.Keys;
+import zdtestpol51.browserUtills.BaseDriver;
 
 import java.util.List;
 
@@ -33,8 +34,7 @@ public class WebTestStepsDefinitions{
 
     @Before
     public void setup(){
-        System.setProperty("webdriver.chrome.driver","src/main/resources/chromedriver.exe");
-        driver = new ChromeDriver();
+        driver = BaseDriver.setHeadlessDriver();
         wait = new WebDriverWait(driver, 10);
     }
 
