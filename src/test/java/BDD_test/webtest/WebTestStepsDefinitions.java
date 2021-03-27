@@ -1,5 +1,6 @@
 package BDD_test.webtest;
 
+import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -14,7 +15,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.Keys;
 
 import java.util.List;
-import java.util.Locale;
+
 
 
 public class WebTestStepsDefinitions{
@@ -33,13 +34,12 @@ public class WebTestStepsDefinitions{
 
     @Given("I go to devTo main page")
     public void i_go_to_devto_main_page() {
-
         driver.get("https://dev.to/");
     }
 
     @When("I click on first blog displayed")
     public void i_click_on_first_blog_displayed() {
-       //driver.findElement(By.className("crayons-story__body")).click();
+
         WebElement firstBlog = driver.findElement(By.cssSelector("h2.crayons-story__title > a"));
         firstBlogTitle = firstBlog.getText();
         firstBlog.click();
@@ -117,6 +117,10 @@ public class WebTestStepsDefinitions{
                 }
             }
         }
+    }
+    @After
+    public void tearDown(){         // standardowa metoda zamkniencia testów
+        driver.quit();
     }
 }
 
